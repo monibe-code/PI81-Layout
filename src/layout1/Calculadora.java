@@ -1,6 +1,8 @@
 package layout1;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.*;
 
@@ -22,37 +24,43 @@ class MarcoCalculadora extends JFrame{
 		setBounds(500,300,450,300);
 		LaminaCalculadora milamina= new LaminaCalculadora();
 		add(milamina);
-		
+		//pack();
 		
 	}
 }
 
 class LaminaCalculadora extends JPanel{
 	public LaminaCalculadora() {
+		principio=true;
 		setLayout(new BorderLayout());
-		JButton pantalla = new JButton("0");
+		pantalla = new JButton("0");
+		//antes de añadir el botón, lo desactivamos:
 		pantalla.setEnabled(false);
 		add(pantalla, BorderLayout.NORTH);
 		
 		//iniciamos una segunda lámina
 		milamina2 = new JPanel();
 		milamina2.setLayout(new GridLayout(4,4));
-		ponerBoton("7");
-		ponerBoton("8");
-		ponerBoton("9");
-		ponerBoton("/");
-		ponerBoton("4");
-		ponerBoton("5");
-		ponerBoton("6");
-		ponerBoton("*");
-		ponerBoton("1");
-		ponerBoton("2");
-		ponerBoton("3");
-		ponerBoton("-");
-		ponerBoton("0");
-		ponerBoton(".");
-		ponerBoton("=");
-		ponerBoton("+");
+		
+		//creamos instancia de la clase InsertaNumero: 
+		ActionListener insertar= new InsertaNumero();
+		
+		ponerBoton("7",insertar);
+		ponerBoton("8",insertar);
+		ponerBoton("9",insertar);
+		//ponerBoton("/");
+		ponerBoton("4",insertar);
+		ponerBoton("5",insertar);
+		ponerBoton("6",insertar);
+		//ponerBoton("*");
+		ponerBoton("1",insertar);
+		ponerBoton("2",insertar);
+		ponerBoton("3",insertar);
+		//ponerBoton("-");
+		ponerBoton("0",insertar);
+		ponerBoton(".",insertar);
+		//ponerBoton("="); 
+		//ponerBoton("+");
 		
 		add(milamina2, BorderLayout.CENTER);
 		
@@ -61,10 +69,32 @@ class LaminaCalculadora extends JPanel{
 		
 	}
 	//creamos un método para agregar botones a la lámina
-	private void ponerBoton(String rotulo) {
+	private void ponerBoton(String rotulo, ActionListener oyente) {
 		JButton boton = new JButton(rotulo);
+		
+		boton.addActionListener(oyente);
+		
 		milamina2.add(boton);
 		
 	}
+	
+	//creamos clase interna que gestiona los eventos
+	private class InsertaNumero implements ActionListener{
+
+	
+		public void actionPerformed(ActionEvent e) {
+			//almacenamos en una variable el texto del botón pulsado
+			String entrada= e.getActionCommand();
+			if (principio) {
+				pantalla.setText("");
+				principio=false;
+			}
+			pantalla.setText(pantalla.getText()+entrada);
+			
+		}
+		
+	}
 	private JPanel milamina2;
+	private JButton pantalla;
+	private boolean principio;
 }
